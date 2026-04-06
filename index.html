@@ -115,7 +115,6 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
   border-right: 3px solid #000;
 }
 
-/* NOVO ESTILO DO TEMPORIZADOR */
 .info {
   display: flex;
   justify-content: flex-end;
@@ -129,18 +128,6 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
   font-weight: bold;
 }
 
-.download-btn {
-  background: #2ecc71;
-  color: #000;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.download-btn.liberado { background: #f1c40f; }
 .waveform { margin-top: 15px; }
 
 .locked {
@@ -178,22 +165,6 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
   70% { box-shadow: 0 0 0 20px rgba(46,204,113,0); }
   100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); }
 }
-
-.modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-  display: none; align-items: center; justify-content: center; z-index: 99999;
-}
-.modal.active { display: flex; }
-.modal-content {
-  background: #111; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px;
-  display:flex; flex-direction:column; align-items:center;
-}
-.modal-content input {
-  width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 10px; background: #222; color: white;
-}
-.modal-content button {
-  width: 100%; padding: 14px; border: none; border-radius: 14px; background: #65c1fb; color: #000; font-weight: 900; cursor: pointer;
-}
 </style>
 </head>
 
@@ -203,7 +174,7 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
   <img src="img/logo.png" class="logo">
   <img src="img/capa.jpg" class="cover">
   <h1>SAMPLE PACK PREMIUM</h1>
-  <p class="subtitle">Samples profissionais prontos para uso</p>
+  <p class="subtitle">Ouça as demonstrações abaixo</p>
   <div class="price">
     <div class="old">DE R$ 49,99</div>
     <div class="new">POR APENAS R$ 25</div>
@@ -213,8 +184,8 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
   <div id="beats"></div>
 
   <div class="locked">
-    <h2>🔒 Desbloqueie todos os samples</h2>
-    <p>Adquira o pack completo e tenha acesso imediato</p>
+    <h2>🔒 Pack Completo Protegido</h2>
+    <p>Adquira a licença para baixar todos os arquivos em alta qualidade.</p>
     <a class="cta" href="https://mpago.li/2vmebhd" target="_blank">LIBERAR PACK COMPLETO</a>
   </div>
   <div class="footer"><p>© 2026 Nômade Record's. Todos os direitos reservados.</p></div>
@@ -222,27 +193,16 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
 
 <a class="fixed-cta" href="https://mpago.li/2vmebhd" target="_blank">COMPRAR AGORA</a>
 
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h2>Baixar sample grátis</h2>
-    <input type="text" id="nome" placeholder="Seu nome">
-    <input type="email" id="email" placeholder="Seu e-mail">
-    <button onclick="liberarDownload()">LIBERAR DOWNLOAD</button>
-  </div>
-</div>
-
 <script>
 const samples = [
-  {name:"obliviate", display:"OBLIVIATE", file:"Obliviate - 140 bpm - Am (@apzin.mix).wav"},
-  {name:"momentum", display:"MOMENTUM", file:"Momentum - 120 bpm - Fm (@apzin.mix).wav"},
-  {name:"patronum", display:"PATRONUM", file:"Patronum - 150 bpm - Gm (@apzin.mix).wav"}
+  {name:"obliviate", display:"OBLIVIATE"},
+  {name:"momentum", display:"MOMENTUM"},
+  {name:"patronum", display:"PATRONUM"}
 ];
 
 let players=[], current=null;
-let selectedFile="", selectedFileName="", selectedBtn=null;
 const container=document.getElementById("beats");
 
-// FORMATADOR DE TEMPO
 function formatTime(seconds) {
   const min = Math.floor(seconds / 60);
   const sec = Math.floor(seconds % 60);
@@ -254,10 +214,7 @@ samples.forEach((s,i)=>{
   <div class="beat" id="beat-row-${i}" onclick="playSample(${i})">
     <div class="top">
       <strong>${s.display}</strong>
-      <div style="display:flex; gap:10px;">
-        <button class="download-btn" onclick="event.stopPropagation(); handleDownload(this,'${s.name}','${s.file}')">BAIXAR</button>
-        <button class="play-btn" id="btn-${i}"></button>
-      </div>
+      <button class="play-btn" id="btn-${i}"></button>
     </div>
     <div id="waveform-${i}" class="waveform"></div>
     <div class="info">
@@ -265,36 +222,6 @@ samples.forEach((s,i)=>{
     </div>
   </div>`;
 });
-
-function handleDownload(btn,f,n){
-  selectedFile=f; selectedFileName=n; selectedBtn=btn;
-  if(btn.classList.contains("liberado")){ baixar(); return; }
-  document.getElementById("modal").classList.add("active");
-}
-
-function liberarDownload(){
-  const nome = document.getElementById("nome").value;
-  const email = document.getElementById("email").value;
-  if(!nome || !email){ alert("Preencha os dados"); return; }
-  
-  const formData = new FormData();
-  formData.append("entry.1591479266", nome);
-  formData.append("entry.903292203", email);
-
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLScXwpFyh8UYRnRsnoLKwFKaGO78hnuHTztNsC1sNpeKVteeiA/formResponse",{
-    method:"POST", mode:"no-cors", body:formData
-  });
-
-  selectedBtn.classList.add("liberado");
-  document.getElementById("modal").classList.remove("active");
-}
-
-function baixar(){
-  const link=document.createElement("a");
-  link.href="samples/"+selectedFile+".wav";
-  link.download=selectedFileName;
-  link.click();
-}
 
 function playSample(i){
   const btn = document.getElementById("btn-"+i);
@@ -329,7 +256,6 @@ function createPlayer(i,url){
 
   wave.load(url);
 
-  // LOGICA DO TEMPORIZADOR
   wave.on('ready', () => {
     const duration = formatTime(wave.getDuration());
     document.getElementById(`time-${i}`).innerText = `00:00 / ${duration}`;
@@ -350,29 +276,10 @@ function createPlayer(i,url){
 }
 
 samples.forEach((s,i)=>{
+  // Certifique-se de que os arquivos .mp3 existem na pasta /preview/
   createPlayer(i,"preview/"+s.name+".mp3");
 });
-
-window.onclick=function(e){
-  if(e.target.id==="modal"){ document.getElementById("modal").classList.remove("active"); }
-}
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
