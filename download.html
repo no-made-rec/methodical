@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download Liberado | methodical.</title>
+
+<meta name="robots" content="noindex">
+
+<style>
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 16px;
+  padding-bottom: 120px;
+  text-align: center;
+}
+
+.logo {
+  display: block;
+  margin: 20px auto;
+  height: 90px;
+  filter: drop-shadow(0 5px 15px rgba(101,193,251,0.3));
+}
+
+.cover {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 24px;
+  margin-bottom: 25px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(101,193,251,0.15);
+}
+
+h1 {
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  color: #bbb;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.cta {
+  display: block;
+  background: #2ecc71;
+  color: #000;
+  padding: 18px;
+  border-radius: 22px;
+  margin: 25px auto;
+  font-weight: 900;
+  transition: all 0.3s ease;
+  max-width: 420px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.cta:hover {
+  background: #fff;
+  transform: scale(1.05);
+}
+
+.loading {
+  margin-top: 20px;
+  display: none;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top: 4px solid #65c1fb;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading p {
+  color: #65c1fb;
+  font-size: 14px;
+}
+
+/* animações */
+.fade-out {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer {
+  text-align: center;
+  color: #555;
+  font-size: 12px;
+  margin: 50px 0 100px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="img/logo.png" class="logo">
+<img src="img/capa.jpg" class="cover">
+
+<h1 id="title">🎧 DOWNLOAD LIBERADO</h1>
+
+<p id="subtitle" class="subtitle">
+Parabéns pela aquisição do <strong>methodical. | loop pack</strong><br>
+Seu acesso está disponível abaixo
+</p>
+
+<div id="btn" class="cta">BAIXAR AGORA</div>
+
+<div id="loading" class="loading">
+  <div class="spinner"></div>
+  <p>Preparando seu download...</p>
+</div>
+
+ <div class="footer">
+    <p style="margin-bottom: 20px; color: #FFF;">
+      ⚠️ Uso permitido exclusivamente mediante creditação ⚠️<br> 
+    </p>
+    <p>© 2026 Nômade Record's. Todos os direitos reservados.</p></div>
+</div>
+
+</div>
+
+<script>
+
+// 🔐 LINK "ESCONDIDO"
+const p1 = "https://drive.google.com/";
+const p2 = "uc?export=download&id=";
+const p3 = "1J1cMKXenIAaHdoegMRnPscf8ukZ-qRwz";
+
+function getLink() {
+  return p1 + p2 + p3;
+}
+
+// TOKEN
+const VALID_TOKEN = "mtdc2K26";
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+const btn = document.getElementById("btn");
+const loading = document.getElementById("loading");
+const title = document.getElementById("title");
+const subtitle = document.getElementById("subtitle");
+
+let done = false;
+
+if (token === VALID_TOKEN) {
+
+  btn.onclick = () => {
+
+    if (done) return;
+
+    btn.style.display = "none";
+    loading.style.display = "block";
+
+    setTimeout(() => {
+      window.open(getLink(), "_blank");
+    }, 1000);
+
+    setTimeout(() => {
+
+      done = true;
+
+      title.classList.add("fade-out");
+      subtitle.classList.add("fade-out");
+
+      setTimeout(() => {
+        title.innerHTML = "🔥 O PRÓXIMO HIT COMEÇA AGORA";
+        title.classList.remove("fade-out");
+        title.classList.add("fade-in");
+
+        subtitle.style.display = "none";
+      }, 500);
+
+      loading.style.display = "none";
+
+      btn.style.display = "block";
+      btn.innerHTML = "✔ DOWNLOAD CONCLUÍDO";
+      btn.style.background = "#2ecc71";
+      btn.style.color = "#fff";
+      btn.style.cursor = "default";
+
+      btn.replaceWith(btn.cloneNode(true));
+
+    }, 6000);
+
+  };
+
+} else {
+
+  document.body.style.background = "#000";
+  document.body.innerHTML = `
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;">
+      <h1>⛔ Acesso não autorizado</h1>
+    </div>
+  `;
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+
