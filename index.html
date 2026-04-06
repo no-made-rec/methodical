@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumus Sample Pack</title>
+<script src="https://unpkg.com/wavesurfer.js"></script>
+
+<style>
+html { scroll-behavior: smooth; }
+
+.play-btn.playing {
+  box-shadow: 0 0 15px rgba(101,193,251,0.8), 0 0 30px rgba(101,193,251,0.4);
+  transform: scale(1.05);
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 16px;
+  padding-bottom: 120px;
+}
+
+.logo {
+  display: block;
+  margin: 20px auto;
+  height: 80px;
+  filter: drop-shadow(0 5px 15px rgba(101,193,251,0.3));
+}
+
+h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
+.subtitle { text-align: center; color: #bbb; margin-bottom: 20px; }
+
+.cover {
+  width: 100%;
+  max-height: 168px;
+  object-fit: cover;
+  border-radius: 24px;
+  margin-bottom: 25px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(101,193,251,0.15);
+}
+
+.price { text-align: center; margin-bottom: 35px; }
+.old { text-decoration: line-through; color: #ff4d4d; font-size: 20px; font-weight: bold; }
+.new { font-size: 36px; color: #2ecc71; font-weight: 900; }
+
+.cta {
+  display: block;
+  text-align: center;
+  background: #65c1fb;
+  color: #000;
+  padding: 18px;
+  border-radius: 20px;
+  margin: 20px 0;
+  text-decoration: none;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: 0.3s;
+}
+
+.cta:hover { background: #fff; transform: scale(1.03); }
+
+.beat {
+  background: rgba(255,255,255,0.03);
+  padding: 20px;
+  border-radius: 24px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.beat:hover { background: rgba(255,255,255,0.06); }
+
+.beat.active {
+  border: 1px solid #65c1fb;
+  background: rgba(101,193,251,0.05);
+  box-shadow: 0 0 20px rgba(101,193,251,0.2);
+}
+
+.top { display: flex; justify-content: space-between; align-items: center; }
+
+.play-btn {
+  background: #65c1fb;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.play-btn::before {
+  content: "";
+  border-left: 10px solid #000;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+
+.play-btn.playing::before {
+  border: none;
+  width: 10px;
+  height: 12px;
+  border-left: 3px solid #000;
+  border-right: 3px solid #000;
+}
+
+/* NOVO ESTILO DO TEMPORIZADOR */
+.info {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.time-display {
+  color: #65c1fb;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.download-btn {
+  background: #2ecc71;
+  color: #000;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.download-btn.liberado { background: #f1c40f; }
+.waveform { margin-top: 15px; }
+
+.locked {
+  text-align: center;
+  margin: 40px 0;
+  padding: 30px;
+  background: #111;
+  border: 1px dashed #333;
+  border-radius: 28px;
+}
+
+.footer { text-align: center; font-size: 12px; margin: 50px 0 100px; color: #777; }
+
+.fixed-cta {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 450px;
+  background: #2ecc71;
+  text-align: center;
+  padding: 18px;
+  font-weight: 900;
+  color: #000;
+  text-decoration: none;
+  border-radius: 22px;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(46,204,113,0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(46,204,113,0); }
+  100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); }
+}
+
+.modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  display: none; align-items: center; justify-content: center; z-index: 99999;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: #111; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px;
+  display:flex; flex-direction:column; align-items:center;
+}
+.modal-content input {
+  width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 10px; background: #222; color: white;
+}
+.modal-content button {
+  width: 100%; padding: 14px; border: none; border-radius: 14px; background: #65c1fb; color: #000; font-weight: 900; cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <img src="img/logo.png" class="logo">
+  <img src="img/capa.jpg" class="cover">
+  <h1>SAMPLE PACK PREMIUM</h1>
+  <p class="subtitle">Samples profissionais prontos para uso</p>
+  <div class="price">
+    <div class="old">DE R$ 49,99</div>
+    <div class="new">POR APENAS R$ 25</div>
+  </div>
+  <a class="cta" href="https://mpago.li/2vmebhd" target="_blank">QUERO O PACK COMPLETO</a>
+  
+  <div id="beats"></div>
+
+  <div class="locked">
+    <h2>🔒 Desbloqueie todos os samples</h2>
+    <p>Adquira o pack completo e tenha acesso imediato</p>
+    <a class="cta" href="https://mpago.li/2vmebhd" target="_blank">LIBERAR PACK COMPLETO</a>
+  </div>
+  <div class="footer"><p>© 2026 Nômade Record's. Todos os direitos reservados.</p></div>
+</div>
+
+<a class="fixed-cta" href="https://mpago.li/2vmebhd" target="_blank">COMPRAR AGORA</a>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>Baixar sample grátis</h2>
+    <input type="text" id="nome" placeholder="Seu nome">
+    <input type="email" id="email" placeholder="Seu e-mail">
+    <button onclick="liberarDownload()">LIBERAR DOWNLOAD</button>
+  </div>
+</div>
+
+<script>
+const samples = [
+  {name:"obliviate", display:"OBLIVIATE", file:"Obliviate - 140 bpm - Am (@apzin.mix).wav"},
+  {name:"momentum", display:"MOMENTUM", file:"Momentum - 120 bpm - Fm (@apzin.mix).wav"},
+  {name:"patronum", display:"PATRONUM", file:"Patronum - 150 bpm - Gm (@apzin.mix).wav"}
+];
+
+let players=[], current=null;
+let selectedFile="", selectedFileName="", selectedBtn=null;
+const container=document.getElementById("beats");
+
+// FORMATADOR DE TEMPO
+function formatTime(seconds) {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+  return min.toString().padStart(2, '0') + ':' + sec.toString().padStart(2, '0');
+}
+
+samples.forEach((s,i)=>{
+  container.innerHTML+=`
+  <div class="beat" id="beat-row-${i}" onclick="playSample(${i})">
+    <div class="top">
+      <strong>${s.display}</strong>
+      <div style="display:flex; gap:10px;">
+        <button class="download-btn" onclick="event.stopPropagation(); handleDownload(this,'${s.name}','${s.file}')">BAIXAR</button>
+        <button class="play-btn" id="btn-${i}"></button>
+      </div>
+    </div>
+    <div id="waveform-${i}" class="waveform"></div>
+    <div class="info">
+      <span class="time-display" id="time-${i}">00:00 / 00:00</span>
+    </div>
+  </div>`;
+});
+
+function handleDownload(btn,f,n){
+  selectedFile=f; selectedFileName=n; selectedBtn=btn;
+  if(btn.classList.contains("liberado")){ baixar(); return; }
+  document.getElementById("modal").classList.add("active");
+}
+
+function liberarDownload(){
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+  if(!nome || !email){ alert("Preencha os dados"); return; }
+  
+  const formData = new FormData();
+  formData.append("entry.1591479266", nome);
+  formData.append("entry.903292203", email);
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLScXwpFyh8UYRnRsnoLKwFKaGO78hnuHTztNsC1sNpeKVteeiA/formResponse",{
+    method:"POST", mode:"no-cors", body:formData
+  });
+
+  selectedBtn.classList.add("liberado");
+  document.getElementById("modal").classList.remove("active");
+}
+
+function baixar(){
+  const link=document.createElement("a");
+  link.href="samples/"+selectedFile+".wav";
+  link.download=selectedFileName;
+  link.click();
+}
+
+function playSample(i){
+  const btn = document.getElementById("btn-"+i);
+  const row = document.getElementById("beat-row-"+i);
+
+  if(current!==null && current!==i){
+    players[current].pause();
+    document.getElementById("btn-"+current).classList.remove("playing");
+    document.getElementById("beat-row-"+current).classList.remove("active");
+  }
+
+  players[i].playPause();
+  current=i;
+
+  if (players[i].isPlaying()) {
+    btn.classList.add("playing");
+    row.classList.add("active");
+  } else {
+    btn.classList.remove("playing");
+    row.classList.remove("active");
+  }
+}
+
+function createPlayer(i,url){
+  const wave=WaveSurfer.create({
+    container:"#waveform-"+i,
+    waveColor:"#444",
+    progressColor:"#65c1fb",
+    height:45,
+    barWidth:2, barGap:3, barRadius:3, cursorWidth:0
+  });
+
+  wave.load(url);
+
+  // LOGICA DO TEMPORIZADOR
+  wave.on('ready', () => {
+    const duration = formatTime(wave.getDuration());
+    document.getElementById(`time-${i}`).innerText = `00:00 / ${duration}`;
+  });
+
+  wave.on('audioprocess', () => {
+    const currentTime = formatTime(wave.getCurrentTime());
+    const duration = formatTime(wave.getDuration());
+    document.getElementById(`time-${i}`).innerText = `${currentTime} / ${duration}`;
+  });
+
+  wave.on('finish', () => {
+    document.getElementById("btn-"+i).classList.remove("playing");
+    document.getElementById("beat-row-"+i).classList.remove("active");
+  });
+
+  players[i]=wave;
+}
+
+samples.forEach((s,i)=>{
+  createPlayer(i,"preview/"+s.name+".mp3");
+});
+
+window.onclick=function(e){
+  if(e.target.id==="modal"){ document.getElementById("modal").classList.remove("active"); }
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
