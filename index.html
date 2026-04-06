@@ -115,10 +115,19 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
   border-right: 3px solid #000;
 }
 
+/* AJUSTE PARA O TEXTO NO CANTO INFERIOR ESQUERDO */
 .info {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 8px;
+}
+
+.loop-tag {
+  color: #777;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .time-display {
@@ -198,12 +207,13 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
 <a class="fixed-cta" href="https://mpago.li/2bapJde" target="_blank">COMPRAR AGORA</a>
 
 <script>
+// Lista de samples com nome do arquivo, exibição e texto do card
 const samples = [
-  {name:"angel", display:"angel"},
-  {name:"ocean", display:"ocean"},
-  {name:"peaceful", display:"peaceful"}
-  {name:"witch", display:"witch"}
-  {name:"growls", display:"growls"}
+  {name:"angel", display:"angel", info: "Lush Vocals / 140 BPM"},
+  {name:"ocean", display:"ocean", info: "Ambient Pad / 120 BPM"},
+  {name:"peaceful", display:"peaceful", info: "Soft Piano / 90 BPM"},
+  {name:"witch", display:"witch", info: "Dark Synth / 150 BPM"},
+  {name:"growls", display:"growls", info: "Heavy Bass / 128 BPM"}
 ];
 
 let players=[], current=null;
@@ -224,6 +234,7 @@ samples.forEach((s,i)=>{
     </div>
     <div id="waveform-${i}" class="waveform"></div>
     <div class="info">
+      <span class="loop-tag">${s.info}</span>
       <span class="time-display" id="time-${i}">00:00 / 00:00</span>
     </div>
   </div>`;
@@ -282,7 +293,7 @@ function createPlayer(i,url){
 }
 
 samples.forEach((s,i)=>{
-  // Certifique-se de que os arquivos .mp3 existem na pasta /preview/
+  // Puxando da pasta /preview/ conforme solicitado
   createPlayer(i,"preview/"+s.name+".mp3");
 });
 </script>
