@@ -19,7 +19,6 @@ body {
   max-width: 700px;
   margin: auto;
   padding: 16px;
-  padding-bottom: 120px;
   text-align: center;
 }
 
@@ -71,6 +70,59 @@ h1 {
   transform: scale(1.05);
 }
 
+/* --- SEÇÃO CONFIRA TAMBÉM --- */
+.recommendations {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recommendations h2 {
+  font-size: 18px;
+  color: #65c1fb;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+}
+
+.grid-products {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.product-card {
+  display: block;
+  text-decoration: none;
+  overflow: hidden;
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: transform 0.5s ease;
+  display: block;
+}
+
+/* Ajuste de enquadramento para capas específicas */
+.img-bottom {
+  object-position: bottom !important;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(101, 193, 251, 0.2);
+}
+
+.product-card:hover img {
+  transform: scale(1.1);
+}
+
+/* --- LOADING E ANIMAÇÕES --- */
 .loading {
   margin-top: 20px;
   display: none;
@@ -95,31 +147,16 @@ h1 {
   font-size: 14px;
 }
 
-/* animações */
-.fade-out {
-  animation: fadeOut 0.5s ease forwards;
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
+.fade-out { animation: fadeOut 0.5s ease forwards; }
+.fade-in { animation: fadeIn 0.5s ease forwards; }
 
 @keyframes fadeOut {
-  to {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
+  to { opacity: 0; transform: translateY(-15px); }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .footer {
@@ -127,6 +164,13 @@ h1 {
   color: #555;
   font-size: 12px;
   margin: 50px 0 100px;
+}
+
+@media (max-width: 480px) {
+  .grid-products {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
 }
 </style>
 </head>
@@ -152,17 +196,32 @@ Seu acesso está disponível abaixo
   <p>Preparando seu download...</p>
 </div>
 
- <div class="footer">
-    <p style="margin-bottom: 20px; color: #FFF;">
-      ⚠️ Uso permitido exclusivamente mediante creditação ⚠️<br> 
-    </p>
-    <p>© 2026 Nômade Record's. Todos os direitos reservados.</p></div>
+<div class="footer">
+  <p style="margin-bottom: 20px; color: #FFF;">
+    ⚠️ Uso permitido exclusivamente mediante creditação ⚠️<br> 
+  </p>
+  
+  <div class="recommendations">
+    <h2>Confira também:</h2>
+    <div class="grid-products">
+      
+      <a href="https://tr.ee/lumussamplepack" class="product-card">
+        <img src="img/capa-lumussamplepack.jpg" class="img-center" alt="Lumus Sample Pack">
+      </a>
+
+      <a href="https://tr.ee/superpackde beats" class="product-card">
+        <img src="img/capa-superpackdebeats.jpg" alt="Superpack de Beats">
+      </a>
+      
+    </div>
+  </div>
+
+  <p>© 2026 Nômade Record's. Todos os direitos reservados.</p>
 </div>
 
 </div>
 
 <script>
-
 // 🔐 LINK "ESCONDIDO"
 const p1 = "https://drive.google.com/";
 const p2 = "uc?export=download&id=";
@@ -185,11 +244,8 @@ const subtitle = document.getElementById("subtitle");
 let done = false;
 
 if (token === VALID_TOKEN) {
-
   btn.onclick = () => {
-
     if (done) return;
-
     btn.style.display = "none";
     loading.style.display = "block";
 
@@ -198,9 +254,7 @@ if (token === VALID_TOKEN) {
     }, 1000);
 
     setTimeout(() => {
-
       done = true;
-
       title.classList.add("fade-out");
       subtitle.classList.add("fade-out");
 
@@ -208,39 +262,27 @@ if (token === VALID_TOKEN) {
         title.innerHTML = "🔥 O PRÓXIMO HIT COMEÇA AGORA";
         title.classList.remove("fade-out");
         title.classList.add("fade-in");
-
         subtitle.style.display = "none";
       }, 500);
 
       loading.style.display = "none";
-
       btn.style.display = "block";
       btn.innerHTML = "✔ DOWNLOAD CONCLUÍDO";
       btn.style.background = "#2ecc71";
       btn.style.color = "#fff";
       btn.style.cursor = "default";
-
       btn.replaceWith(btn.cloneNode(true));
-
     }, 6000);
-
   };
-
 } else {
-
   document.body.style.background = "#000";
   document.body.innerHTML = `
     <div style="display:flex;justify-content:center;align-items:center;height:100vh;">
-      <h1>⛔ Acesso não autorizado</h1>
+      <h1 style="color:white; font-family:sans-serif;">⛔ Acesso não autorizado</h1>
     </div>
   `;
 }
-
 </script>
 
 </body>
 </html>
-
-
-
-
